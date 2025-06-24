@@ -1,0 +1,13 @@
+# 日記AI 設定ファイル (config.py.example)
+# このファイルをconfig.pyにコピーして、実際の値を設定してください
+
+# Notion API設定
+NOTION_API_KEY = "your_notion_api_key_here"
+NOTION_DATABASE_ID = "your_notion_database_id_here"
+
+# OpenAI API設定  
+OPENAI_API_KEY = "your_openai_api_key_here"
+OPENAI_MODEL = "gpt-4"  # または "gpt-3.5-turbo"
+
+# デバッグモード
+DEBUG = False 
