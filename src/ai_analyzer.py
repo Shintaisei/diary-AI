@@ -96,18 +96,39 @@ class DiaryAIAnalyzer:
             self.logger.error(f"要約生成エラー: {e}")
             return f"要約生成中にエラーが発生しました: {e}"
     
-    def generate_advice(self, diary_content: str) -> str:
+    def generate_advice(self, diary_content: str, context: str = "") -> str:
         """
-        日記に基づいてアドバイスを生成
+        日記に基づいてアドバイスを生成（履歴を考慮）
         
         Args:
             diary_content: 日記の内容
+            context: 過去の日記履歴からの文脈情報
             
         Returns:
             アドバイス文
         """
         try:
-            prompt = f"""
+            # 文脈情報を含むプロンプトを作成
+            if context.strip():
+                prompt = f"""
+あなたは長期間にわたってこのユーザーの日記を見守っている優しいカウンセラーです。
+以下の情報を参考に、継続的で個人的なアドバイスを提供してください。
+
+【ユーザーの履歴・傾向】
+{context}
+
+【今日の日記】
+{diary_content}
+
+以下の点を考慮してアドバイスしてください：
+- 過去の経験や成長の軌跡を踏まえる
+- 繰り返しのパターンがあれば指摘し、改善のヒントを提供
+- 前向きな変化があれば認めて励ます
+- 継続的なサポートの姿勢を示す
+- 個人の成長と幸福に焦点を当てる
+"""
+            else:
+                prompt = f"""
 以下の日記を読んで、建設的で励ましになるアドバイスを提供してください。
 個人の成長や幸福に焦点を当てて、優しく支援的な言葉で回答してください。
 
@@ -118,7 +139,7 @@ class DiaryAIAnalyzer:
             response = self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "system", "content": "あなたは親身になって相談に乗る優しいカウンセラーです。"},
+                    {"role": "system", "content": "あなたは親身になって相談に乗る優しいカウンセラーです。長期的な関係性を大切にし、継続的なサポートを提供します。"},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.7

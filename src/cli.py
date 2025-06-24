@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """
-日記AI - Notion連携アプリ
-メインエントリーポイント
+日記AI - CLI版
+コマンドライン版のインターフェース
 """
 
 import sys
 import os
 from datetime import datetime
 
-# srcディレクトリをパスに追加
-#__file__は現在のディレクトリ、これとsrcを結合し日記AI/srcを基準とする
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+# 現在のディレクトリをパスに追加
+sys.path.append(os.path.dirname(__file__))
 
 from diary_manager import DiaryManager
 
@@ -79,11 +78,6 @@ def create_new_diary(diary_manager: DiaryManager):
     print("\n📝 新しい日記を作成")
     print("-" * 30)
     
-    title = input("タイトル: ").strip()
-    if not title:
-        print("❌ タイトルは必須です。")
-        return
-    
     print("内容を入力してください（終了するには空行で'end'と入力）:")
     content_lines = []
     while True:
@@ -98,10 +92,14 @@ def create_new_diary(diary_manager: DiaryManager):
         return
     
     print("\n🔄 日記を作成中...")
-    result = diary_manager.create_diary_with_analysis(title, content)
+    result = diary_manager.create_diary_with_analysis(content)
     
     if result["status"] == "success":
         print("✅ 日記の作成が完了しました！")
+        
+        # 生成されたタイトルを表示
+        generated_title = result.get("generated_title", "タイトル生成エラー")
+        print(f"📝 生成されたタイトル: {generated_title}")
         
         # AI分析結果を表示
         ai_analysis = result.get("ai_analysis", {})
